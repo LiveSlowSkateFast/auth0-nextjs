@@ -1,19 +1,34 @@
-import * as React from 'react'
-import Link from 'next/link'
-import Layout from '../components/Layout'
-import { NextPage } from 'next'
+import React from 'react';
 
-const IndexPage: NextPage = () => {
+import Layout from '../components/layout';
+import { useFetchUser } from '../lib/user';
+
+export default function Home(): React.ReactElement {
+  const { user, loading } = useFetchUser();
+
   return (
-    <Layout title="Home | Next.js + TypeScript Example">
-      <h1>Hello Next.js 👋</h1>
-      <p>
-        <Link href="/about">
-          <a>About</a>
-        </Link>
-      </p>
-    </Layout>
-  )
-}
+    <Layout user={user} loading={loading}>
+      <h1>Next.js and Auth0 Example</h1>
 
-export default IndexPage
+      {loading && <p>Loading login info...</p>}
+
+      {!loading && !user && (
+        <>
+          <p>
+            To test the login click in <i>Login</i>
+          </p>
+          <p>
+            Once you have logged in you should be able to click in <i>Profile</i> and <i>Logout</i>
+          </p>
+        </>
+      )}
+
+      {user && (
+        <>
+          <h4>Rendered user info on the client</h4>
+          <pre>{JSON.stringify(user, null, 2)}</pre>
+        </>
+      )}
+    </Layout>
+  );
+}
